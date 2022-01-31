@@ -121,11 +121,17 @@
                 this.greenWord3 = "";
                 this.greenWord4 = "";
                 this.greenWord5 = "";
+                // 黒文字リストに緑色の文字が存在する場合はその文字を黒文字リストから消す
+                this.blackWords = this.blackWords.filter(elm1 => this.greenWords.map(elm2 => elm2.word).every(elm3 => elm3 !== elm1));
             },
             addBlack: function () {
                 if (this.blackWord != "")
                     this.blackWords = this.blackWords.concat([...this.blackWord]);
                 this.blackWord = "";
+                // 黒文字リストに緑色の文字が存在する場合はその文字を黒文字リストから消す
+                this.blackWords = this.blackWords.filter(elm1 => this.greenWords.map(elm2 => elm2.word).every(elm3 => elm3 !== elm1));
+                // 黒文字リストに黄色の文字が存在する場合はその文字を黒文字リストから消す
+                this.blackWords = this.blackWords.filter(elm1 => this.yellowWords.map(elm2 => elm2.word).every(elm3 => elm3 !== elm1));
             },
             addYellow: function () {
                 if (this.yellowWord1 != "")
@@ -143,6 +149,8 @@
                 this.yellowWord3 = "";
                 this.yellowWord4 = "";
                 this.yellowWord5 = "";
+                // 黒文字リストに黄色の文字が存在する場合はその文字を黒文字リストから消す
+                this.blackWords = this.blackWords.filter(elm1 => this.yellowWords.map(elm2 => elm2.word).every(elm3 => elm3 !== elm1));
             },
             checkRule: function (word) {
                 let oneword = [...word];
