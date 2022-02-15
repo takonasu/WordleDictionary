@@ -8,3 +8,10 @@ Wordle（ https://www.powerlanguage.co.uk/wordle/ ）を攻略するためのプ
 
 # 利用方法
 こちらにアクセス→ https://work.takonasu.net/wordle/  
+
+# 諸事情
+Reactを勉強がてらVueで作ったものをReactのプロジェクトに移行したものです．
+変な書き方等している場合はお知らせください．
+なお，
+`npm start`
+でローカルで実行できます．
