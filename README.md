@@ -13,5 +13,7 @@ Wordle（ https://www.powerlanguage.co.uk/wordle/ ）を攻略するためのプ
 Reactを勉強がてらVueで作ったものをReactのプロジェクトに移行したものです．
 変な書き方等している場合はお知らせください．
 なお，
-`npm start`
-でローカルで実行できます．
+`yarn start`
+でローカルで実行できます．  
+nvmでnodeのバージョン管理をしていますので以下のコマンドでnodeのバージョンを切り替えることができます．
+`nvm use`
