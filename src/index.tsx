@@ -1,37 +1,40 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import 'bulma/css/bulma.css';
 import Card from './components/Card';
 import Header from './components/Header';
 
 const Main = () => {
+	type Inputs = {
+		blockWords: string;
+		greenWord0: string;
+		greenWord1: string;
+		greenWord2: string;
+		greenWord3: string;
+		greenWord4: string;
+		yellowWord0: string;
+		yellowWord1: string;
+		yellowWord2: string;
+		yellowWord3: string;
+		yellowWord4: string;
+	};
 	type WordList = {
 		place: number;
 		word: string;
 	};
 
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors }
+	} = useForm<Inputs>();
+
 	const [wordleData, setWordleData] = useState<Array<string>>(['now loading...']);
 	const [greenWordList, setGreenWordList] = useState<Array<WordList>>([]);
 	const [yellowWordList, setYellowWordList] = useState<Array<WordList>>([]);
 	const [blockWordList, setBlockWordList] = useState<Array<string>>([]);
-
-	const greenTextInput: Array<React.RefObject<HTMLInputElement>> = [
-		useRef<HTMLInputElement>(null),
-		useRef<HTMLInputElement>(null),
-		useRef<HTMLInputElement>(null),
-		useRef<HTMLInputElement>(null),
-		useRef<HTMLInputElement>(null)
-	];
-
-	const yellowTextInput: Array<React.RefObject<HTMLInputElement>> = [
-		useRef<HTMLInputElement>(null),
-		useRef<HTMLInputElement>(null),
-		useRef<HTMLInputElement>(null),
-		useRef<HTMLInputElement>(null),
-		useRef<HTMLInputElement>(null)
-	];
-
-	const blockTextInput = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
 		fetch('./data/wordles.json', { method: 'GET' })
@@ -41,25 +44,24 @@ const Main = () => {
 			});
 	}, []);
 
-	const addWords = () => {
+	const addWords: SubmitHandler<Inputs> = (data) => {
 		const newGreenWordList = [...greenWordList];
 		const newYellowWordList = [...yellowWordList];
 		let newBlockWordList = [...blockWordList];
+		const greenTextInput = [data.greenWord0, data.greenWord1, data.greenWord2, data.greenWord3, data.greenWord4];
+		const yellowTextInput = [data.yellowWord0, data.yellowWord1, data.yellowWord2, data.yellowWord3, data.yellowWord4];
 		greenTextInput.forEach((elm, index) => {
-			if (elm.current && elm.current.value !== '') {
-				newGreenWordList.push({ place: index, word: elm.current.value });
-				elm.current.value = '';
+			if (elm !== '') {
+				newGreenWordList.push({ place: index, word: elm });
 			}
 		});
 		yellowTextInput.forEach((elm, index) => {
-			if (elm.current && elm.current.value !== '') {
-				newYellowWordList.push({ place: index, word: elm.current.value });
-				elm.current.value = '';
+			if (elm !== '') {
+				newYellowWordList.push({ place: index, word: elm });
 			}
 		});
-		if (blockTextInput.current && blockTextInput.current.value !== '') {
-			newBlockWordList = newBlockWordList.concat(Array.from(blockTextInput.current.value));
-			blockTextInput.current.value = '';
+		if (data.blockWords !== '') {
+			newBlockWordList = newBlockWordList.concat(Array.from(data.blockWords));
 		}
 		// 黒文字リストに緑色の文字が存在する場合はその文字を黒文字リストから消す
 		newBlockWordList = newBlockWordList.filter((elm1) =>
@@ -113,53 +115,97 @@ const Main = () => {
 							</div>
 						</article>
 						<section className="section">
-							<div className="container">
-								<label className="label">緑色の文字</label>
-								{greenTextInput.map((elm, index) => {
-									return (
-										<input
-											key={'input' + index}
-											className="input is-primary"
-											type="text"
-											ref={elm}
-											placeholder=""
-											maxLength={1}
-											style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
-										/>
-									);
-								})}
-							</div>
-							<div className="container">
-								<label className="label">黄色の文字</label>
-								{yellowTextInput.map((elm, index) => {
-									return (
-										<input
-											key={'input' + index}
-											className="input is-warning"
-											type="text"
-											ref={elm}
-											placeholder=""
-											maxLength={1}
-											style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
-										/>
-									);
-								})}
-							</div>
-							<div className="container">
-								<label className="label">黒色の文字</label>
-								<input
-									className="input"
-									type="text"
-									placeholder=""
-									ref={blockTextInput}
-									style={{ width: '95%', marginLeft: '2.5%' }}
-								/>
-							</div>
-							<div className="has-text-right">
-								<button className="button is-dark" style={{ marginTop: '1rem' }} onClick={() => addWords()}>
-									追加
-								</button>
-							</div>
+							<form onSubmit={handleSubmit(addWords)}>
+								<div className="container">
+									<label className="label">緑色の文字</label>
+									<input
+										className="input is-primary"
+										type="text"
+										{...register('greenWord0')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+									<input
+										className="input is-primary"
+										type="text"
+										{...register('greenWord1')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+									<input
+										className="input is-primary"
+										type="text"
+										{...register('greenWord2')}
+										placeholder=""
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+									<input
+										className="input is-primary"
+										type="text"
+										{...register('greenWord3')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+									<input
+										className="input is-primary"
+										type="text"
+										{...register('greenWord4')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+								</div>
+								<div className="container">
+									<label className="label">黄色の文字</label>
+									<input
+										className="input is-warning"
+										type="text"
+										{...register('yellowWord0')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+									<input
+										className="input is-warning"
+										type="text"
+										{...register('yellowWord1')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+									<input
+										className="input is-warning"
+										type="text"
+										{...register('yellowWord2')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+									<input
+										className="input is-warning"
+										type="text"
+										{...register('yellowWord3')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+									<input
+										className="input is-warning"
+										type="text"
+										{...register('yellowWord4')}
+										maxLength={1}
+										style={{ width: '15%', margin: '0 2.5% 0 2.5%' }}
+									/>
+								</div>
+								<div className="container">
+									<label className="label">黒色の文字</label>
+									<input
+										className="input"
+										type="text"
+										{...register('blockWords')}
+										style={{ width: '95%', marginLeft: '2.5%' }}
+									/>
+								</div>
+								<div className="has-text-right">
+									<input type="submit" className="button is-dark" style={{ marginTop: '1rem' }} value="追加" />
+								</div>
+							</form>
 						</section>
 						<article className="message">
 							<div className="message-header">入力された文字一覧</div>
